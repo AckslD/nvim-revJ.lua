@@ -1,6 +1,6 @@
 # nvim-revJ.lua
 
-Nvim-plugin for doing the opposite of join-line of arguments written in lua.
+Nvim-plugin for doing the opposite of join-line (J) of arguments written in lua.
 Uses [`vim-textobj-parameter`](https://github.com/sgur/vim-textobj-parameter) to determine what are start and ends of arguments.
 
 ![](revj.gif)
