@@ -7,6 +7,8 @@ local settings = {
     keymaps = {},
 }
 
+local SHIFTWIDTH = vim.fn.shiftwidth()
+
 local default_keymaps = function()
     return {
         operator = '<Leader>J',
@@ -65,15 +67,14 @@ local seperate_motion_with_newlines = function(start_pos, orig_indent)
     if is_end_bracket(getcurchar()) then
         indent = orig_indent
     else
-        indent = orig_indent+4
+        indent = orig_indent+SHIFTWIDTH
     end
     set_indent(indent)
     vim.fn.setpos('.', start_pos)
     normal('ya,`[', {noremap = true})
     if vim.fn.getcurpos()[3] > 1 then
-    -- if not is_first_non_whitespace() then
         normal('i<CR><Esc>') -- new line
-        set_indent(orig_indent+4)
+        set_indent(orig_indent+SHIFTWIDTH)
     end
 end
 
@@ -83,14 +84,13 @@ local is_last_arg = function()
 end
 
 local seperate_args_with_newlines = function(orig_indent)
-    -- for i = 0, 4 do
     while {true} do
         normal('ya,`]', {noremap = false}) -- go to , after first arg
         if is_last_arg() then
             break
         end
         normal('hf i<CR><Esc>') -- new line for next arg
-        set_indent(orig_indent+4)
+        set_indent(orig_indent+SHIFTWIDTH)
     end
 end
 
@@ -201,7 +201,7 @@ revj.format_visual = function()
     revj.format_region(vim.fn.visualmode())
 end
 
-revj.setup = function(user_settings) -- TODO arguments/config
+revj.setup = function(user_settings)
     if (user_settings == nil) then
         user_settings = {}
     end
