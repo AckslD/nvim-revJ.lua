@@ -1,5 +1,0 @@
-(A) don't override users registers
-(A) don't override users last visual selection (in normal command)
-x 2021-03-23 support visual mode
-x 2021-03-23 how to deal with arguments which themselves have arguments?
-x 2021-03-23 make sure start and end of motion overlap with an arg
