@@ -8,6 +8,7 @@ local settings = {
 }
 
 local SHIFTWIDTH = vim.fn.shiftwidth()
+local SEPERATOR = ',' -- TODO others?
 
 local default_keymaps = function()
     return {
@@ -50,15 +51,15 @@ local add_last_colon_if_missing = function(end_pos)
         return
     end
     local cur_char = getcurchar()
-    if (cur_char == ',') then
+    if (cur_char == SEPERATOR) then
         return
     end
     normal('l')
     local cur_char = getcurchar()
-    if (cur_char == ',') then
+    if (cur_char == SEPERATOR) then
         return
     end
-    normal('i,<Esc>')
+    normal('i'..SEPERATOR..'<Esc>')
 end
 
 local set_indent = function(indent)
