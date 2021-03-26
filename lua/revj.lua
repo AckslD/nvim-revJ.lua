@@ -34,15 +34,28 @@ local normal = function(keys, opts)
     vim.cmd(replace_termcodes(cmd.." "..keys))
 end
 
+local getcurchar = function()
+    normal('vy')
+    return vim.fn.getreg('""')
+end
+
 local add_last_colon_if_missing = function(end_pos)
     -- check if either current or next character is , otherwise insert it
     vim.fn.setpos('.', end_pos)
-    normal('ya,`]vy', {noremap = false}) -- go to end of arg and get last char
-    if (vim.fn.getreg('""') == ',') then
+    normal('ya,`]', {noremap = false}) -- go to end of arg and get last char
+    -- since vim-textobj-parameter considers , followed by blankspace an argument
+    -- we need to check this manually for now
+    local arg = vim.fn.getreg('""')
+    if vim.fn.match(arg, '^,\\s*$') == 0 then
         return
     end
-    normal('lvy')
-    if (vim.fn.getreg('""') == ',') then
+    local cur_char = getcurchar()
+    if (cur_char == ',') then
+        return
+    end
+    normal('l')
+    local cur_char = getcurchar()
+    if (cur_char == ',') then
         return
     end
     normal('i,<Esc>')
@@ -50,11 +63,6 @@ end
 
 local set_indent = function(indent)
     normal('^d0i'..string.rep(' ', indent))
-end
-
-local getcurchar = function()
-    normal('vy')
-    return vim.fn.getreg('""')
 end
 
 local is_end_bracket = function(char)
@@ -99,12 +107,12 @@ local is_arg = function()
     return vim.fn.getpos("'[")[3] ~= vim.fn.getpos("']")[3]
 end
 
-local are_ends_args = function(start_pos, end_pos)
-    vim.fn.setpos('.', start_pos)
+local are_ends_args = function(region)
+    vim.fn.setpos('.', region.first)
     if not is_arg() then
         return false
     end
-    vim.fn.setpos('.', end_pos)
+    vim.fn.setpos('.', region.last)
     if not is_arg() then
         return false
     end
@@ -164,26 +172,34 @@ local escape_pattern = function(pattern)
     return vim.fn.substitute(pattern, '[', '\\\\[', '')
 end
 
-revj.format_region = function(mode)
-    local orig_indent = vim.fn.indent('.')
-    local start_pos, end_pos
+local get_region = function(mode)
+    local first, last
     if (mode == 'char') then
-        start_pos = vim.fn.getpos("'[")
-        end_pos = vim.fn.getpos("']")
+        first = vim.fn.getpos("'[")
+        last = vim.fn.getpos("']")
     elseif (mode == 'v') then
-        start_pos = vim.fn.getpos("'<")
-        end_pos = vim.fn.getpos("'>")
+        first = vim.fn.getpos("'<")
+        last = vim.fn.getpos("'>")
     else
         return
     end
-    if not are_ends_args(start_pos, end_pos) then
+    return {first = first, last = last}
+end
+
+revj.format_region = function(mode)
+    local orig_indent = vim.fn.indent('.')
+    local region = get_region(mode)
+    if region == nil then
+        return
+    end
+    if not are_ends_args(region) then
         vim.cmd("echoerr 'Motion ends do not overlap with args'")
         return
     end
     if settings.new_line_before_last_bracket then
-        add_last_colon_if_missing(end_pos)
+        add_last_colon_if_missing(region.last)
     end
-    seperate_motion_with_newlines(start_pos, orig_indent)
+    seperate_motion_with_newlines(region.first, orig_indent)
     seperate_args_with_newlines(orig_indent)
 end
 
