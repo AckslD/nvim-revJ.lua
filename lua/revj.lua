@@ -55,39 +55,10 @@ local is_end_bracket = function(char)
     return vim.fn.match(settings.brackets.last, char) >= 0
 end
 
-local is_last_parameter_of_expression = function()
-    select_and_return_outer_parameter()
-    normal('`]l') -- go character after parameter
-    local cur_char = getcurchar()
-    return is_end_bracket(cur_char)
-end
-
 local is_cur_parameter_empty = function()
     local parameter = select_and_return_outer_parameter()
     normal('`]')
     return vim.fn.match(parameter, '^\\s*'..SEPERATOR..'\\s*$') >= 0
-end
-
-local add_last_colon_if_missing = function(end_pos)
-    -- check if either current or next character is , otherwise insert it
-    vim.fn.setpos('.', end_pos)
-    local parameter = select_and_return_outer_parameter()
-    normal('`]') -- go to end of parameter and get last char
-    -- since vim-textobj-parameter considers , followed by blankspace a parameter
-    -- we need to check this manually for now
-    if is_cur_parameter_empty() then
-        return
-    end
-    local cur_char = getcurchar()
-    if (cur_char == SEPERATOR) then
-        return
-    end
-    normal('l')
-    cur_char = getcurchar()
-    if (cur_char == SEPERATOR) then
-        return
-    end
-    normal('i'..SEPERATOR..'<Esc>')
 end
 
 local set_indent = function(indent)
@@ -103,23 +74,28 @@ local only_whitespace_to_the_left = function()
     return is_match
 end
 
-local only_whitespace_to_the_right = function()
-    local cur_pos = vim.fn.getcurpos()
-    normal('y$')
-    local left_text = vim.fn.getreg('""')
-    local is_match = vim.fn.match(left_text, '^.\\s*$') >= 0
-    vim.fn.setpos('.', cur_pos)
-    return is_match
-end
-
-local go_to_start_of_first_overlapping_parameter = function(region)
+local go_to_start_of_first_overlapping_parameter = function(region, opts)
+    if opts == nil then
+        opts = {}
+    end
     vim.fn.setpos('.', region.first)
-    select_and_return_outer_parameter()
+    if opts.inner then
+        select_and_return_inner_parameter()
+    else
+        select_and_return_outer_parameter()
+    end
 end
 
-local go_to_end_of_last_overlapping_parameter = function(region)
+local go_to_end_of_last_overlapping_parameter = function(region, opts)
+    if opts == nil then
+        opts = {}
+    end
     vim.fn.setpos('.', region.last)
-    select_and_return_outer_parameter()
+    if opts.inner then
+        select_and_return_inner_parameter()
+    else
+        select_and_return_outer_parameter()
+    end
     normal('`]')
 end
 
@@ -184,7 +160,7 @@ local format_end_of_region = function(region, orig_indent)
         normal('l')
     elseif is_end_bracket(get_next_char()) then
         select_and_return_inner_parameter()
-        normal('`]')-- go to end of inner argument
+        normal('`]') -- go to end of inner argument
         if settings.add_seperator_for_last_parameter then
             normal('a'..SEPERATOR..'<Esc>')
         end
@@ -207,7 +183,7 @@ local format_end_of_region = function(region, orig_indent)
 end
 
 local format_start_of_region = function(region, orig_indent)
-    go_to_start_of_first_overlapping_parameter(region)
+    go_to_start_of_first_overlapping_parameter(region, {inner=true})
     if not only_whitespace_to_the_left() then
         normal('i<CR><Esc>') -- new line
         set_indent(orig_indent+SHIFTWIDTH)
@@ -228,7 +204,7 @@ end
 
 local is_last_parameter_on_line = function()
     local cur_line = vim.fn.getcurpos()[2]
-    return vim.fn.search([[,.*\S]], 'znc', cur_line) == 0 --TODO correct?
+    return vim.fn.search([[,.*\S]], 'znc', cur_line) == 0
 end
 
 local seperate_parameters_with_newlines = function(orig_indent)
@@ -241,7 +217,6 @@ local seperate_parameters_with_newlines = function(orig_indent)
             error("couldn't not format current given region")
         end
         if is_last_parameter_on_line() then
-            -- TODO check to add last seperator
             break
         end
         add_newline()
