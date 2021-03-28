@@ -372,8 +372,6 @@ revj.format_region = function(mode)
         return
     end
     local orig_indent = get_orig_indent()
-    print('region', region.first[3], region.last[3])
-    print('orig_indent', orig_indent)
     if not are_ends_parameters(region) then
         vim.cmd("echoerr 'Motion ends do not overlap with parameters'")
         return
