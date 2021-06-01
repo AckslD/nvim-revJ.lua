@@ -5,7 +5,7 @@ vim.o.runtimepath = vim.o.runtimepath..",/home/axel/.local/share/nvim/site/pack/
 vim.cmd("source /home/axel/.local/share/nvim/site/pack/packer/start/vim-textobj-parameter/plugin/textobj/parameter.vim")
 vim.bo.shiftwidth = 4
 
-vim.g.mapleader = 'a'
+vim.g.mapleader = ','
 
 require("revj").setup{
     brackets = {first = '([{<', last = ')]}>'}, -- brackets to consider surrounding arguments
