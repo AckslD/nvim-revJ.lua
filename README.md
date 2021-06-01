@@ -2,6 +2,7 @@
 
 Nvim-plugin for doing the opposite of join-line (J) of arguments written in lua.
 Uses [`vim-textobj-parameter`](https://github.com/sgur/vim-textobj-parameter) to determine what are start and ends of arguments.
+Note that `vim-textobj-parameter` in turn requires `vim-textobj-user`.
 
 ![](revj.gif)
 
@@ -11,11 +12,12 @@ Use your favourite plugin manager, for example using [`packer.nvim`](https://git
 ```lua
 use {
     'AckslD/nvim-revJ.lua',
-    requires = {'sgur/vim-textobj-parameter'},
+    requires = {'kana/vim-textobj-user', 'sgur/vim-textobj-parameter'},
 }
 ```
 or [`vim-plug`](https://github.com/junegunn/vim-plug):
 ```vim
+Plug 'kana/vim-textobj-user'
 Plug 'sgur/vim-textobj-parameter'
 Plug 'AckslD/nvim-revJ.lua'
 ```
