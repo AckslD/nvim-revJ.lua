@@ -8,7 +8,7 @@ local settings = {
     keymaps = {},
 }
 
-local SHIFTWIDTH = vim.fn.shiftwidth()
+local shiftwidth = vim.fn.shiftwidth()
 local SEPERATOR = ',' -- TODO others?
 
 local default_keymaps = function()
@@ -177,7 +177,7 @@ local format_end_of_region = function(region, orig_indent)
     if is_end_bracket(getcurchar()) then
         new_indent = orig_indent
     else
-        new_indent = orig_indent+SHIFTWIDTH
+        new_indent = orig_indent+shiftwidth
     end
     set_indent(new_indent)
 end
@@ -186,7 +186,7 @@ local format_start_of_region = function(region, orig_indent)
     go_to_start_of_first_overlapping_parameter(region, {inner=true})
     if not only_whitespace_to_the_left() then
         normal('i<CR><Esc>') -- new line
-        set_indent(orig_indent+SHIFTWIDTH)
+        set_indent(orig_indent+shiftwidth)
 
         -- remove trailing whitespace on this and previous line
         remove_trailing_whitespace()
@@ -221,7 +221,7 @@ local seperate_parameters_with_newlines = function(orig_indent)
         end
         add_newline()
         remove_trailing_whitespace()
-        set_indent(orig_indent+SHIFTWIDTH)
+        set_indent(orig_indent+shiftwidth)
     end
 end
 
@@ -366,7 +366,12 @@ local get_orig_indent = function()
     return vim.fn.indent('.')
 end
 
+local update_local_shiftwidth = function()
+    shiftwidth = vim.fn.shiftwidth()
+end
+
 revj.format_region = function(mode)
+    update_local_shiftwidth()
     local region = get_region(mode)
     if region == nil then
         return
