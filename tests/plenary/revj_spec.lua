@@ -1,4 +1,5 @@
 local function assert_scenario(scenario)
+    vim.cmd('set runtimepath?')
     vim.api.nvim_buf_set_lines(0, 0, -1, true, vim.fn.split(scenario.initial_buffer, '\n'))
     for _, command in ipairs(scenario.commands) do
         local keys = vim.api.nvim_replace_termcodes(command, true, false, true)

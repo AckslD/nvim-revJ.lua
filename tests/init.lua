@@ -1,9 +1,7 @@
-vim.o.runtimepath = vim.o.runtimepath..",."
-vim.o.runtimepath = vim.o.runtimepath..",./vim-textobj-parameter"
-vim.cmd("source ./vim-textobj-parameter/plugin/textobj/parameter.vim")
-vim.bo.shiftwidth = 4
+vim.cmd('runtime! plugin/textobj/parameter.vim')
 
 vim.g.mapleader = ','
+vim.bo.shiftwidth = 4
 
 require("revj").setup{
     brackets = {first = '([{<', last = ')]}>'}, -- brackets to consider surrounding arguments

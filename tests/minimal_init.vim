@@ -1,0 +1,1 @@
+runtime! plugin/plenary.vim
