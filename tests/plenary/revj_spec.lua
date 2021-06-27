@@ -2,7 +2,7 @@ local function assert_scenario(scenario)
     -- print(vim.o.runtimepath)
     -- vim.cmd('map')
     -- print(vim.g.mapleader)
-    print(vim.o.shiftwidth)
+    print(vim.fn.shiftwidth())
     vim.api.nvim_buf_set_lines(0, 0, -1, true, vim.fn.split(scenario.initial_buffer, '\n'))
     for _, command in ipairs(scenario.commands) do
         local keys = vim.api.nvim_replace_termcodes(command, true, false, true)
@@ -34,19 +34,18 @@ describe("revJ", function()
 
     it("local shiftwidth", function()
         assert_scenario{
-            initial_buffer = "vim.g.Illuminate_ftblacklist = { 'TelescopePrompt', 'dashboard', 'vimwiki', 'man', 'help', 'packer', 'nnn', 'lspinfo', '' }",
+            initial_buffer = "some_func([1, 2], 1, 2, 3, True, lst=[], kw1=False, d={2, 3})",
             -- commands = {":set shiftwidth=2", ":lua require('revj').format_line()<CR>"},
             commands = {":set shiftwidth=2", ",j"},
-            expected_buffer = [[vim.g.Illuminate_ftblacklist = {
-  'TelescopePrompt',
-  'dashboard',
-  'vimwiki',
-  'man',
-  'help',
-  'packer',
-  'nnn',
-  'lspinfo',
-  '',
+            expected_buffer = [[some_func(
+  [1, 2],
+  1,
+  2,
+  3,
+  True,
+  lst=[],
+  kw1=False,
+  d={2, 3},
 }]],
         }
     end)
