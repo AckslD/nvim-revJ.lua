@@ -1,8 +1,6 @@
--- vim.cmd('filetype plugin on')
--- vim.cmd('set runtimepath+="/home/axel/Dev/vim-plugins/nvim-revJ.lua"')
-vim.o.runtimepath = vim.o.runtimepath..",/home/axel/Dev/vim-plugins/nvim-revJ.lua"
-vim.o.runtimepath = vim.o.runtimepath..",/home/axel/.local/share/nvim/site/pack/packer/start/vim-textobj-parameter"
-vim.cmd("source /home/axel/.local/share/nvim/site/pack/packer/start/vim-textobj-parameter/plugin/textobj/parameter.vim")
+vim.o.runtimepath = vim.o.runtimepath..",."
+vim.o.runtimepath = vim.o.runtimepath..",./vim-textobj-parameter"
+vim.cmd("source ./vim-textobj-parameter/plugin/textobj/parameter.vim")
 vim.bo.shiftwidth = 4
 
 vim.g.mapleader = ','

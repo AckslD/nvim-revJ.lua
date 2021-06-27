@@ -58,3 +58,14 @@ require("revj").setup{
     },
 }
 ```
+
+# Development
+## Testing
+To run the tests locally, first do (only needed once)
+```
+make test-deps
+```
+then to run the tests do
+```
+make test
+```
