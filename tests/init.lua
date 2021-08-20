@@ -1,3 +1,8 @@
+print('here')
+vim.o.runtimepath = vim.o.runtimepath .. ',./rtps/plenary.nvim'
+vim.o.runtimepath = vim.o.runtimepath .. ',./rtps/vim-textobj-user'
+vim.o.runtimepath = vim.o.runtimepath .. ',./rtps/vim-textobj-parameter'
+vim.o.runtimepath = vim.o.runtimepath .. ',.'
 vim.cmd('runtime! plugin/textobj/parameter.vim')
 
 vim.g.mapleader = ','
