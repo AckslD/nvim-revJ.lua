@@ -60,3 +60,10 @@ require("revj").setup{
     },
 }
 ```
+
+# Development
+## Testing
+To run the tests locally (TODO update)
+```
+make test
+```
