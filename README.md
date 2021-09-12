@@ -1,8 +1,10 @@
 # nvim-revJ.lua
 
 Nvim-plugin for doing the opposite of join-line (J) of arguments written in lua.
-Uses [`vim-textobj-parameter`](https://github.com/sgur/vim-textobj-parameter) to determine what are start and ends of arguments.
-Note that `vim-textobj-parameter` in turn requires `vim-textobj-user`.
+Requires some textobject that selects a argument such as [`vim-textobj-parameter`](https://github.com/sgur/vim-textobj-parameter) or [`targets.vim`](https://github.com/wellle/targets.vim).
+Note: `vim-textobj-parameter` in turn requires `vim-textobj-user`.
+Note: `targets.vim` should in principle work I think but I haven't managed to get it to select arguments as I would want.
+Note: whitespace needs to be included in the textobject so [`nvim-treesitter-textobjects`](https://github.com/nvim-treesitter/nvim-treesitter-textobjects) won't work yet, because of [this](https://github.com/nvim-treesitter/nvim-treesitter-textobjects/pull/23#issuecomment-805853884).
 
 ![](revj.gif)
 
@@ -13,12 +15,18 @@ Use your favourite plugin manager, for example using [`packer.nvim`](https://git
 use {
     'AckslD/nvim-revJ.lua',
     requires = {'kana/vim-textobj-user', 'sgur/vim-textobj-parameter'},
+    -- or
+    -- requires = {'wellle/targets.vim'},
+    -- or ...
 }
 ```
 or [`vim-plug`](https://github.com/junegunn/vim-plug):
 ```vim
 Plug 'kana/vim-textobj-user'
 Plug 'sgur/vim-textobj-parameter'
+" or
+" Plug 'wellle/targets.vim'
+" or ...
 Plug 'AckslD/nvim-revJ.lua'
 ```
 
@@ -42,6 +50,8 @@ require("revj").setup{
         line = '<Leader>j', -- for formatting current line
         visual = '<Leader>j', -- for formatting visual selection
     },
+    parameter_mapping = ',', -- specifies what text object selects an arguments (ie a, and i, by default)
+        -- if you're using `vim-textobj-parameter` you can also set this to `vim.g.vim_textobj_parameter_mapping`
 }
 ```
 

@@ -6,6 +6,7 @@ local settings = {
     add_seperator_for_last_parameter = true,
     enable_default_keymaps = false,
     keymaps = {},
+    parameter_mapping = ',',
 }
 
 local shiftwidth = vim.fn.shiftwidth()
@@ -37,12 +38,12 @@ local normal = function(keys, opts)
 end
 
 local select_and_return_inner_parameter = function()
-    normal('yi'..vim.g.vim_textobj_parameter_mapping, {noremap = false})
+    normal('yi'..settings.parameter_mapping, {noremap = false})
     return vim.fn.getreg('""')
 end
 
 local select_and_return_outer_parameter = function()
-    normal('ya'..vim.g.vim_textobj_parameter_mapping, {noremap = false})
+    normal('ya'..settings.parameter_mapping, {noremap = false})
     return vim.fn.getreg('""')
 end
 
