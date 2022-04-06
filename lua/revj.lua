@@ -371,7 +371,16 @@ local update_local_shiftwidth = function()
     shiftwidth = vim.fn.shiftwidth()
 end
 
-revj.format_region = function(mode)
+local function without_autocmd_wrap(func)
+  return function(...)
+    local saved = vim.api.nvim_get_option('eventignore')
+    vim.api.nvim_set_option('eventignore', 'all')
+    func(...)
+    vim.api.nvim_set_option('eventignore', saved)
+  end
+end
+
+revj.format_region = without_autocmd_wrap(function(mode)
     update_local_shiftwidth()
     local region = get_region(mode)
     if region == nil then
@@ -384,7 +393,7 @@ revj.format_region = function(mode)
     end
     seperate_motion_with_newlines(region, orig_indent)
     seperate_parameters_with_newlines(orig_indent)
-end
+end)
 
 revj.format_line = function()
     local cur_line = vim.fn.getcurpos()[2]
