@@ -1,5 +1,9 @@
 # nvim-revJ.lua
 
+:warning: *I've decided to completely re-write this plugin and use treesitter instead of textobjects etc and completely move away from the current implementation. Feel free to checkout `trevJ` instead:*
+
+https://github.com/AckslD/nvim-trevJ.lua
+
 Nvim-plugin for doing the opposite of join-line (J) of arguments written in lua.
 Requires some textobject that selects a argument such as [`vim-textobj-parameter`](https://github.com/sgur/vim-textobj-parameter) or [`targets.vim`](https://github.com/wellle/targets.vim).
 Note: `vim-textobj-parameter` in turn requires `vim-textobj-user`.
